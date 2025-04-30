@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Big-Small Predictor + Register</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+        }
+        .header {
+            background-color: #d9534f;
+            color: white;
+            text-align: center;
+            padding: 10px;
+            font-size: 22px;
+            font-weight: bold;
+        }
+        .card {
+            background: white;
+            padding: 10px;
+            margin: 10px auto;
+            width: 90%;
+            max-width: 350px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            border-radius: 10px;
+            text-align: center;
+        }
+        .result {
+            font-size: 16px;
+            margin-top: 8px;
+        }
+        .small { color: green; }
+        .big { color: red; }
+        iframe {
+            width: 100%;
+            height: 70vh;
+            border: none;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">AJAY BHAI</div>
+
+<div class="card">
+    <h2>Big-Small Predictor</h2>
+    <div id="output">
+        <p>Calculating...</p>
+    </div>
+</div>
+
+<iframe src="https://bdgbiz.com/#/register?invitationCode=523719361327"></iframe>
+
+<script>
+    function generatePeriodNumber() {
+        const now = new Date();
+        const yyyy = now.getUTCFullYear();
+        const mm = String(now.getUTCMonth() + 1).padStart(2, '0');
+        const dd = String(now.getUTCDate()).padStart(2, '0');
+        const hours = now.getUTCHours();
+        const minutes = now.getUTCMinutes();
+        const totalMinutes = hours * 60 + minutes;
+        const datePart = `${yyyy}${mm}${dd}`;
+        const periodSuffix = 10001 + totalMinutes;
+        return `${datePart}1000${periodSuffix}`;
+    }
+
+    function predictBigSmall(periodNumber) {
+        const digits = periodNumber.split('').map(Number);
+        const total = digits.reduce((acc, val) => acc + val, 0);
+        const mod = total % 2;
+        const prediction = (mod === 0) ? "Small" : "Big";
+        return { prediction, mod };
+    }
+
+    function updatePrediction() {
+        const periodNumber = generatePeriodNumber();
+        const result = predictBigSmall(periodNumber);
+
+        document.getElementById('output').innerHTML = `
+            <div class="result">
+                <strong>Period Number:</strong><br>${periodNumber}<br><br>
+                <strong>Prediction:</strong> 
+                <span class="${result.prediction.toLowerCase()}">${result.prediction}</span> 
+            </div>
+        `;
+    }
+
+    function startPrediction() {
+        updatePrediction();
+        setInterval(() => {
+            const now = new Date();
+            if (now.getUTCSeconds() === 0) {
+                updatePrediction();
+            }
+        }, 1000);
+    }
+
+    startPrediction();
+</script>
+
+</body>
+</html>
